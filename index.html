@@ -1,236 +1,125 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>План прохождения игр (с сохранением)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #111827; /* bg-gray-900 */
-            color: #d1d5db; /* text-gray-300 */
-        }
-        .genre-badge {
-            display: inline-block;
-            padding: 0.25rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border-radius: 9999px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .genre-adventure { background-color: #10B981; color: #ffffff; } /* Emerald-500 */
-        .genre-shooter { background-color: #3B82F6; color: #ffffff; } /* Blue-500 */
-        .genre-horror { background-color: #EF4444; color: #ffffff; } /* Red-500 */
-        .genre-rpg { background-color: #8B5CF6; color: #ffffff; } /* Violet-500 */
-        .genre-long { background-color: #F97316; color: #ffffff; } /* Orange-500 */
-
-        .game-row:has(input:checked) {
-            text-decoration: line-through;
-            color: #6b7280; /* text-gray-500 */
-        }
-        .game-row:has(input:checked) .genre-badge {
-            opacity: 0.6;
-        }
-        .table-container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 1rem;
-        }
-        @media (max-width: 768px) {
-            .table-container {
-                padding: 0.5rem;
-                margin: 1rem auto;
-            }
-            .genre-badge {
-                padding: 0.2rem 0.4rem;
-                font-size: 0.65rem;
-            }
-            .hidden-mobile {
-                display: none;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>План прохождения игр</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1e1e1e;
+        color: #fff;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #444;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #333;
+    }
+    .shooter { background-color: #2b5dff44; }
+    .horror { background-color: #ff2b2b44; }
+    .adventure { background-color: #ffa50044; }
+    .long { background-color: #8000ff44; }
+    .mixed { background-color: #00ff7f44; }
+    .completed {
+        text-decoration: line-through;
+        opacity: 0.5;
+    }
+</style>
 </head>
 <body>
 
-    <div class="table-container">
-        <h1 class="text-3xl font-bold text-white mb-2 text-center">📅 План прохождения игр</h1>
-        <p class="text-center text-gray-400 mb-8">Отмечайте завершенные игры. Прогресс сохраняется автоматически.</p>
+<h1>📅 План прохождения игр</h1>
+<table id="gameTable">
+    <tr>
+        <th>✔</th>
+        <th>№</th>
+        <th>Название</th>
+        <th>Жанр</th>
+        <th>Время</th>
+    </tr>
+</table>
 
-        <!-- Текущие игры -->
-        <h2 class="text-2xl font-semibold text-white mt-8 mb-4">▶️ Текущие игры</h2>
-        <div class="bg-gray-800 rounded-lg shadow-md overflow-x-auto">
-            <table class="w-full text-left">
-                <thead class="bg-gray-700/50 text-gray-300 uppercase text-xs">
-                    <tr>
-                        <th class="p-4 w-12">#</th>
-                        <th class="p-4">Игра</th>
-                        <th class="p-4 text-center">Жанр</th>
-                        <th class="p-4 hidden-mobile text-center">Время</th>
-                        <th class="p-4 text-center w-20">Статус</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="game-row border-b border-gray-700 hover:bg-gray-700/40 transition-colors duration-200">
-                        <td class="p-4 font-medium">1</td>
-                        <td class="p-4 font-medium text-white" data-game-id="Death Stranding">Death Stranding</td>
-                        <td class="p-4 text-center"><span class="genre-badge genre-adventure">Приключение</span> <span class="genre-badge genre-long">Длинная</span></td>
-                        <td class="p-4 hidden-mobile text-center">~38 ч</td>
-                        <td class="p-4 text-center"><input type="checkbox" class="game-checkbox w-5 h-5 rounded bg-gray-600 border-gray-500 focus:ring-blue-500"></td>
-                    </tr>
-                    <tr class="game-row border-b border-gray-700 hover:bg-gray-700/40 transition-colors duration-200">
-                        <td class="p-4 font-medium">2</td>
-                        <td class="p-4 font-medium text-white" data-game-id="Battlefield 4">Battlefield 4</td>
-                        <td class="p-4 text-center"><span class="genre-badge genre-shooter">Шутер</span></td>
-                        <td class="p-4 hidden-mobile text-center">~6 ч</td>
-                        <td class="p-4 text-center"><input type="checkbox" class="game-checkbox w-5 h-5 rounded bg-gray-600 border-gray-500 focus:ring-blue-500"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<script>
+const games = [
+    {title: "Death Stranding", genre: "long", time: "38 ч, прогресс есть"},
+    {title: "Battlefield 4", genre: "shooter", time: "6 ч, прогресс есть"},
+    {title: "Detroit: Become Human", genre: "adventure", time: "12 ч, прогресс есть"},
+    {title: "Ghost of Tsushima", genre: "adventure", time: "25 ч, прогресс есть"},
+    {title: "Star Wars Battlefront 2", genre: "shooter", time: "8–10 ч"},
+    {title: "Crysis 1", genre: "shooter", time: "10–12 ч"},
+    {title: "Crysis 2", genre: "shooter", time: "12–15 ч"},
+    {title: "Crysis 3", genre: "shooter", time: "10–12 ч"},
+    {title: "Tomb Raider 1", genre: "adventure", time: "11 ч"},
+    {title: "Uncharted 4: A Thief’s End", genre: "adventure", time: "14–16 ч"},
+    {title: "Rise of the Tomb Raider", genre: "adventure", time: "13–15 ч"},
+    {title: "Uncharted: The Lost Legacy", genre: "adventure", time: "8–10 ч"},
+    {title: "Shadow of the Tomb Raider", genre: "adventure", time: "14–16 ч"},
+    {title: "Dead Space", genre: "horror", time: "12–15 ч"},
+    {title: "Resident Evil 2", genre: "horror", time: "10–12 ч"},
+    {title: "Resident Evil 3", genre: "horror", time: "8–10 ч"},
+    {title: "Resident Evil 4", genre: "horror", time: "15–20 ч"},
+    {title: "Resident Evil Village", genre: "horror", time: "10–12 ч"},
+    {title: "The Callisto Protocol", genre: "horror", time: "12–14 ч"},
+    {title: "Prey", genre: "shooter", time: "12–15 ч"},
+    {title: "Quantum Break", genre: "mixed", time: "12–14 ч"},
+    {title: "Control Ultimate", genre: "mixed", time: "12–15 ч"},
+    {title: "Sifu", genre: "adventure", time: "8–10 ч"},
+    {title: "Still Wakes the Deep", genre: "horror", time: "8–10 ч"},
+    {title: "Days Gone", genre: "long", time: "36 ч"},
+    {title: "Hogwarts Legacy", genre: "long", time: "26 ч"},
+    {title: "Assassin's Creed Origins", genre: "long", time: "30 ч"},
+    {title: "Baldur’s Gate 3", genre: "long", time: "RPG, длинная"},
+    {title: "God of War 2", genre: "long", time: "—"},
+    {title: "Assassin's Creed Mirage", genre: "long", time: "—"},
+    {title: "Kingdom Come Deliverance", genre: "long", time: "RPG, длинная"},
+    {title: "Expedition 33", genre: "adventure", time: "—"},
+    {title: "Final Fantasy 7 Remake", genre: "long", time: "—"},
+    {title: "Final Fantasy 16", genre: "long", time: "—"}
+];
 
-        <!-- Короткие игры -->
-        <h2 class="text-2xl font-semibold text-white mt-8 mb-4">🎯 Короткие игры</h2>
-        <div class="bg-gray-800 rounded-lg shadow-md overflow-x-auto">
-            <table class="w-full text-left" id="short-games-table">
-                 <thead class="bg-gray-700/50 text-gray-300 uppercase text-xs">
-                    <tr>
-                        <th class="p-4 w-12">#</th>
-                        <th class="p-4">Игра</th>
-                        <th class="p-4 text-center">Жанр</th>
-                        <th class="p-4 hidden-mobile text-center">Время</th>
-                        <th class="p-4 text-center w-20">Статус</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Сюда будут добавлены игры с помощью JS -->
-                </tbody>
-            </table>
-        </div>
+const table = document.getElementById("gameTable");
 
-        <!-- Длинные игры -->
-        <h2 class="text-2xl font-semibold text-white mt-8 mb-4">🏔️ Длинные игры (после Death Stranding)</h2>
-        <div class="bg-gray-800 rounded-lg shadow-md overflow-x-auto">
-            <table class="w-full text-left" id="long-games-table">
-                 <thead class="bg-gray-700/50 text-gray-300 uppercase text-xs">
-                    <tr>
-                        <th class="p-4">Игра</th>
-                        <th class="p-4 text-center">Жанр</th>
-                        <th class="p-4 hidden-mobile text-center">Время</th>
-                        <th class="p-4 text-center w-20">Статус</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Сюда будут добавлены игры с помощью JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+games.forEach((game, index) => {
+    let row = document.createElement("tr");
+    row.classList.add(game.genre);
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const shortGames = [
-                { num: 3, name: 'Detroit: Become Human', genres: ['adventure'], time: '~12 ч' },
-                { num: 4, name: 'Ghost of Tsushima', genres: ['adventure'], time: '~25 ч' },
-                { num: 5, name: 'Star Wars Battlefront 2', genres: ['shooter'], time: '~8-10 ч' },
-                { num: 6, name: 'Crysis 1', genres: ['shooter'], time: '~10-12 ч' },
-                { num: 7, name: 'Crysis 2', genres: ['shooter'], time: '~12-15 ч' },
-                { num: 8, name: 'Crysis 3', genres: ['shooter'], time: '~10-12 ч' },
-                { num: 9, name: 'Tomb Raider (2013)', genres: ['adventure'], time: '~11 ч' },
-                { num: 10, name: 'Uncharted 4: A Thief’s End', genres: ['adventure'], time: '~14-16 ч' },
-                { num: 11, name: 'Rise of the Tomb Raider', genres: ['adventure'], time: '~13-15 ч' },
-                { num: 12, name: 'Uncharted: The Lost Legacy', genres: ['adventure'], time: '~8-10 ч' },
-                { num: 13, name: 'Shadow of the Tomb Raider', genres: ['adventure'], time: '~14-16 ч' },
-                { num: 14, name: 'Dead Space', genres: ['horror'], time: '~12-15 ч' },
-                { num: 15, name: 'Resident Evil 2', genres: ['horror'], time: '~10-12 ч' },
-                { num: 16, name: 'The Callisto Protocol', genres: ['horror'], time: '~12-14 ч' },
-                { num: 17, name: 'Prey', genres: ['shooter'], time: '~12-15 ч' },
-                { num: 18, name: 'Quantum Break', genres: ['shooter', 'adventure'], time: '~12-14 ч' },
-                { num: 19, name: 'Control Ultimate Edition', genres: ['shooter', 'adventure'], time: '~12-15 ч' },
-                { num: 20, name: 'Sifu', genres: ['adventure'], time: '~8-10 ч' },
-                { num: 21, name: 'Still Wakes the Deep', genres: ['shooter', 'horror'], time: '~8-10 ч' }
-            ];
+    let checkCell = document.createElement("td");
+    let checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = localStorage.getItem("game_" + index) === "true";
+    if (checkbox.checked) row.classList.add("completed");
+    checkbox.addEventListener("change", () => {
+        localStorage.setItem("game_" + index, checkbox.checked);
+        row.classList.toggle("completed", checkbox.checked);
+    });
+    checkCell.appendChild(checkbox);
 
-            const longGames = [
-                { name: 'Days Gone', genres: ['adventure', 'long'], time: '~36 ч' },
-                { name: 'Hogwarts Legacy', genres: ['rpg', 'adventure', 'long'], time: '~26 ч' },
-                { name: 'Assassin\'s Creed Origins', genres: ['rpg', 'adventure', 'long'], time: '~30 ч' },
-                { name: 'Baldur’s Gate 3', genres: ['rpg', 'long'], time: 'Очень' },
-                { name: 'God of War Ragnarök', genres: ['adventure', 'long'], time: '??' },
-                { name: 'Assassin\'s Creed Mirage', genres: ['adventure', 'long'], time: '??' },
-                { name: 'Kingdom Come: Deliverance', genres: ['rpg', 'long'], time: 'Очень' }
-            ];
+    let numCell = document.createElement("td");
+    numCell.textContent = index + 1;
 
-            function createGenreBadges(genres) {
-                const genreMap = {
-                    adventure: 'Приключение',
-                    shooter: 'Шутер',
-                    horror: 'Хоррор',
-                    rpg: 'RPG',
-                    long: 'Длинная'
-                };
-                return genres.map(g => `<span class="genre-badge genre-${g}">${genreMap[g]}</span>`).join(' ');
-            }
+    let titleCell = document.createElement("td");
+    titleCell.textContent = game.title;
 
-            function populateTable(tableId, gamesData, hasNumberColumn = true) {
-                const tableBody = document.querySelector(`#${tableId} tbody`);
-                gamesData.forEach(game => {
-                    const row = document.createElement('tr');
-                    row.className = 'game-row border-b border-gray-700 hover:bg-gray-700/40 transition-colors duration-200';
-                    
-                    let rowHTML = '';
-                    if(hasNumberColumn) {
-                        rowHTML += `<td class="p-4 font-medium">${game.num}</td>`;
-                    }
-                    rowHTML += `
-                        <td class="p-4 font-medium text-white" data-game-id="${game.name}">${game.name}</td>
-                        <td class="p-4 text-center">${createGenreBadges(game.genres)}</td>
-                        <td class="p-4 hidden-mobile text-center">${game.time}</td>
-                        <td class="p-4 text-center"><input type="checkbox" class="game-checkbox w-5 h-5 rounded bg-gray-600 border-gray-500 focus:ring-blue-500"></td>
-                    `;
-                    row.innerHTML = rowHTML;
-                    tableBody.appendChild(row);
-                });
-            }
+    let genreCell = document.createElement("td");
+    genreCell.textContent = game.genre;
 
-            // --- ЛОГИКА СОХРАНЕНИЯ И ЗАГРУЗКИ ---
-            const STORAGE_KEY = 'gameProgressData';
+    let timeCell = document.createElement("td");
+    timeCell.textContent = game.time;
 
-            function saveProgress() {
-                const progress = {};
-                document.querySelectorAll('.game-checkbox').forEach(checkbox => {
-                    const gameId = checkbox.closest('tr').querySelector('[data-game-id]').dataset.gameId;
-                    progress[gameId] = checkbox.checked;
-                });
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-            }
-
-            function loadProgress() {
-                const savedProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                document.querySelectorAll('[data-game-id]').forEach(cell => {
-                    const gameId = cell.dataset.gameId;
-                    if (savedProgress[gameId]) {
-                        const checkbox = cell.closest('tr').querySelector('.game-checkbox');
-                        checkbox.checked = true;
-                    }
-                });
-            }
-            
-            // --- ИНИЦИАЛИЗАЦИЯ ---
-            populateTable('short-games-table', shortGames, true);
-            populateTable('long-games-table', longGames, false);
-            
-            loadProgress();
-
-            document.querySelectorAll('.game-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', saveProgress);
-            });
-        });
-    </script>
+    row.appendChild(checkCell);
+    row.appendChild(numCell);
+    row.appendChild(titleCell);
+    row.appendChild(genreCell);
+    row.appendChild(timeCell);
+    table.appendChild(row);
+});
+</script>
 </body>
 </html>
